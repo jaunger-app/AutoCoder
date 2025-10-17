@@ -22,6 +22,6 @@ jobs:
 
         run: |
             echo "Issue Number: ${ISSUE_NUMBER}"
-            echo "Issue Body: ${ISSUE_NUMBER}"
-            echo "Issue Assignees: ${ISSUE_NUMBER}"
-            echo "Issue Labels: ${ISSUE_NUMBER}"
+            echo "Issue Body: ${ISSUE_BODY}"
+            echo "Issue Assignees: ${ISSUE_ASSIGNEES}"
+            echo "Issue Labels: ${ISSUE_LABELS}"
