@@ -7,7 +7,7 @@ on:
 
 jobs:
   access_issue_info:
-    if: contains(toJson(github.event.label.name), 'autocoder-bot')
+    if: contains(github.event.label.name), 'autocoder-bot')
     runs-on: ubuntu-latest
     steps:
     
