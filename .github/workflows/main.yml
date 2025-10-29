@@ -1,42 +1,39 @@
-name: Access Issue Information
-
+name: Autocoder Bot Workflow
+ 
 on:
   issues:
     types: [opened, reopened, labeled]
-
+ 
 jobs:
-  access_issue_info:
-    if: contains(toJson(github.event.issue.labels.*.name), 'autocoder-bot')
+  generate_code:
+    if: ${{ (github.event.action == 'labeled' && github.event.label.name == 'autocoder-bot') || (github.event.action != 'labeled' && contains(join(github.event.issue.labels.*.name, ','), 'autocoder-bot')) }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout Repository
         uses: actions/checkout@v5
-        
-      - name: Fix line endings (convert CRLF to LF) 
-        run: sed -i 's/\r$//' scripts/script.sh
-
+ 
       - name: Set permissions for script.sh
         run: chmod +x scripts/script.sh
-
+ 
       - name: Run script.sh
-        id: generate_code
-        run: bash scripts/script.sh "$GITHUB_TOKEN" "$GITHUB_REPOSITORY" "${{ github.event.issue.number }}" "$OPENAI_API_KEY"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        run: ./scripts/script.sh $GITHUB_TOKEN $REPOSITORY $ISSUE_NUMBER $OPENAI_API_KEY
+ 
+      - name: Upload generated files as artifacts
+        uses: actions/upload-artifact@v5
         with:
           name: autocoder-artifact
-          path: autocoder-bot/*
-          if-no-files-found: error
-          retention-days: 1
-
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
+          path: ./autocoder-bot
+ 
+      - name: Download artifacts
+        uses: actions/download-artifact@v5
         with:
           name: autocoder-artifact
-
-      - name: List files in the artifact
-        run: ls -laR autocoder-bot/
+          path: ./autocoder-artifact
+ 
+      - name: List files in artifact
+        run: ls -R ./autocoder-artifact
