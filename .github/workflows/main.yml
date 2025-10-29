@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Fix line endings (convert CRLF to LF) 
-        run: sed -i 's/\r$//' scripts/script.sh
-        
       - name: Checkout Repository
         uses: actions/checkout@v5
+
+      - name: Fix line endings (convert CRLF to LF) 
+        run: sed -i 's/\r$//' scripts/script.sh
  
       - name: Set permissions for script.sh
         run: chmod +x scripts/script.sh
