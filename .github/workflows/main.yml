@@ -14,8 +14,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v5.0.0
 
-      - name: List everythinh
+      - name: List everything
         run: ls -la
+
+      - name: Fix line endings (convert CRLF to LF)
+        run: sed -i 's/\r$//' scripts/script.sh
+
     
       - name: Set permissions for script.sh
         run: chmod +x scripts/script.sh
