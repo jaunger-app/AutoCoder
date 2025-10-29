@@ -20,7 +20,7 @@ jobs:
 
       - name: Run script.sh
         id: generate_code
-        run: bash scripts/script.sh "$GITHUB_TOKEN" "$GITHUB_REPOSITORY" "${{ github.event.issue.number }}" "$OPENAI_API_KEY"
+        run: ./scripts/script.sh "$GITHUB_TOKEN" "$GITHUB_REPOSITORY" "${{ github.event.issue.number }}" "$OPENAI_API_KEY"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
