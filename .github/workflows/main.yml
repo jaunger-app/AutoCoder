@@ -1,49 +1,42 @@
-name: Access Issue Information and Generate Code
+name: Auto_Coder
 
 on:
   issues:
     types: [opened, reopened, labeled]
 
-permissions:
-  contents: read
-  actions: write
-
 jobs:
-  process_issue:
-    runs-on: ubuntu-latest
+  access_issue_info:
     if: contains(github.event.issue.labels.*.name, 'autocoder-bot')
-
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
-
+        
       - name: Fix line endings (convert CRLF to LF) 
         run: sed -i 's/\r$//' scripts/script.sh
 
-      - name: Make Script Executable
-        run: chmod +x ./scripts/script.sh
+      - name: Set permissions for script.sh
+        run: chmod +x scripts/script.sh
 
-      - name: Generate Code with ChatGPT
+      - name: Run script.sh
         id: generate_code
+        run: bash scripts/script.sh "$GITHUB_TOKEN" "$GITHUB_REPOSITORY" "${{ github.event.issue.number }}" "$OPENAI_API_KEY"
         env:
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: bash scripts/script.sh $ISSUE_NUMBER $REPO $OPENAI_API_KEY
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v5
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: autocoder-artifact
-          path: autocoder-artifact/
+          path: autocoder-bot/*
+          if-no-files-found: error
+          retention-days: 1
 
-      - name: Download Artifact
-        uses: actions/download-artifact@v5
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
           name: autocoder-artifact
-          path: autocoder-artifact
 
-      - name: List Files Recursively
-        run: |
-          echo "Listing all files in autocoder-artifact directory:"
-          ls -R autocoder-artifact/
+      - name: List files in the artifact
+        run: ls -laR autocoder-bot/
