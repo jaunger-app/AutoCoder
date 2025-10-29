@@ -39,4 +39,4 @@ jobs:
           name: autocoder-artifact
 
       - name: List all files recursively
-        run: ls -laR autocoder-bot/
+        run: ls -R autocoder-bot/
