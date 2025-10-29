@@ -38,5 +38,5 @@ jobs:
         with:
           name: autocoder-artifact
 
-      - name: List files in the artifact
+      - name: List all files recursively
         run: ls -laR autocoder-bot/
