@@ -6,6 +6,7 @@ on:
 
 jobs:
   access_issue_info:
+    if: contains(toJson(github.event.issue.labels), "autocoder-bot)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -17,17 +18,7 @@ jobs:
       - name: Set permissions for script.sh
         run: chmod +x scripts/script.sh
 
-      - name: Check if issue has 'autocoder-bot' label
-        id: check_label
-        run: |
-          labels=$(echo '${{ toJson(github.event.issue.labels) }}' | jq -r '.[] | .name')
-          if echo "$labels" | grep -q 'autocoder-bot'; then
-            echo "has_label=true" >> $GITHUB_ENV
-          else
-            echo "has_label=false" >> $GITHUB_ENV
-          fi
       - name: Run script.sh
-        if: env.has_label == 'true'
         id: generate_code
         run: bash scripts/script.sh "$GITHUB_TOKEN" "$GITHUB_REPOSITORY" "${{ github.event.issue.number }}" "$OPENAI_API_KEY"
         env:
