@@ -9,6 +9,10 @@ jobs:
     if: ${{ (github.event.action == 'labeled' && github.event.label.name == 'autocoder-bot') || (github.event.action != 'labeled' && contains(join(github.event.issue.labels.*.name, ','), 'autocoder-bot')) }}
     runs-on: ubuntu-latest
     steps:
+
+      - name: Fix line endings (convert CRLF to LF) 
+        run: sed -i 's/\r$//' scripts/script.sh
+        
       - name: Checkout Repository
         uses: actions/checkout@v5
  
