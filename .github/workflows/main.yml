@@ -37,9 +37,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: autocoder-artifact
-
-      - name: debug
-        run: ls -la
-
-      - name: List all files recursively
-        run: ls -R autocoder-bot
+          path: ./autocoder-artifact
+ 
+      - name: List files in artifact
+        run: ls -R ./autocoder-artifact
