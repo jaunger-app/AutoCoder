@@ -6,7 +6,7 @@ on:
 
 jobs:
   access_issue_info:
-    if: contains(toJson(github.event.issue.labels), "autocoder-bot)
+     if: ${{ (github.event.action == 'labeled' && github.event.label.name == 'autocoder-bot') || (github.event.action != 'labeled' && contains(join(github.event.issue.labels.*.name, ','), 'autocoder-bot')) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
