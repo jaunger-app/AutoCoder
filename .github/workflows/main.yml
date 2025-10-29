@@ -8,7 +8,6 @@ jobs:
   access_issue_info:
     if: contains(toJson(github.event.issue.labels), 'autocoder-bot') || github.event.label.name == 'autocoder-bot'
     runs-on: ubuntu-latest
-    runs-on: ubuntu-latest
     steps:
     
       - name: Checkout Code
