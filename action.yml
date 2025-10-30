@@ -57,8 +57,10 @@ runs:
       id: create_pr
       uses: peter-evans/create-pull-request@v7
       with:
-        token: ${{ inputs.github_token }}
+        token: ${{ GITHUB_TOKEN }}
         branch: autocoder-branch-${{ inputs.issue_number }}
         base: main
         title: "AutoCoder: Generated code for issue #${{ inputs.issue_number }}"
         labels: ${{ inputs.issue_label }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token }}
