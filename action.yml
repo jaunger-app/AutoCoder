@@ -1,5 +1,12 @@
 name: 'AutoCoder'
-description: 'AutoCoder is a powerful GitHub Action that automates the process of transforming issue descriptions into working code using OpenAI’s ChatGPT. When an issue is labeled with a specified tag, AutoCoder automatically retrieves its content, passes the information to ChatGPT via the OpenAI API, and generates high-quality code or documentation based on the issue context. The action then commits the generated code to a new branch and opens a pull request for team review and approval. This seamless automation accelerates development workflows, reduces repetitive coding tasks, and enhances collaboration between developers and AI. AutoCoder is fully customizable — you can specify the issue label to monitor, define your code generation script, and control repository and authentication settings. Whether you’re prototyping new features, writing boilerplate code, or exploring AI-assisted development, AutoCoder streamlines the entire process from idea to implementation directly within GitHub.'
+description: >
+  AutoCoder is an advanced GitHub Action that automates code generation, enhancement, and management tasks by integrating seamlessly with OpenAI’s ChatGPT. 
+  It is designed to intelligently convert GitHub issue descriptions into high-quality, ready-to-review code contributions. When an issue with a specific label is detected, 
+  AutoCoder retrieves the issue context, interacts with ChatGPT using the provided OpenAI API key, and generates appropriate code, documentation, or configuration files. 
+  The action then commits the generated output to a new branch, creates a pull request automatically, and tags it for review. 
+  This workflow significantly reduces repetitive development tasks, accelerates prototyping, and promotes consistent coding practices across projects. 
+  Developers can easily customize inputs such as repository details, issue labels, and script paths to fit their team’s workflow. 
+  By combining automation and AI-driven insights, AutoCoder streamlines collaboration, increases productivity, and transforms how teams build and maintain software directly within GitHub.
 author: 'jaunger'
 
 inputs:
