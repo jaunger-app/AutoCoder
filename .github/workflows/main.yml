@@ -37,7 +37,7 @@ jobs:
 
       - name: Commit generated code
         run: |
-           git add ./autocoder-artifact
+           git add .
            git commit -m "feat: add new Auto generated Code"
 
       - name: Create Pull Request
