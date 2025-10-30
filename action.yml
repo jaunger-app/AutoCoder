@@ -49,15 +49,11 @@ runs:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
 
-    - name: Configure Git
+    - name: Configure Git and Credentials
       run: |
         git config user.name "autocoder-bot"
         git config user.email "actions@github.com"
-        
-    - name: Commit generated code
-      run: |
-        git add .
-        git commit -m "feat: add new Auto generated Code"
+        git remote set-url origin https://x-access-token:${{ inputs.GITHUB_TOKEN }}@github.com/${{ inputs.REPOSITORY }}.git
            
 
     - name: Create Pull Request
