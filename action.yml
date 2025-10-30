@@ -4,43 +4,45 @@ author: 'jaunger'
 
 inputs:
   GITHUB_TOKEN:
-    description: 'Personal access token (PAT) used for GitHub API authentication. Required to create pull requests and manage repository operations.'
+    description: 'GitHub token for authentication and repository operations.'
     required: true
   OPENAI_API_KEY:
-    description: 'API key for OpenAI, enabling ChatGPT-based code generation from issue descriptions.'
+    description: 'API key for OpenAI to generate code using ChatGPT.'
     required: true
   LABEL:
-    description: 'Label assigned to issues that should trigger AutoCoder. Only issues with this label are processed.'
+    description: 'Label that triggers the AutoCoder action.'
     required: true
     default: 'autocoder-bot'
   REPOSITORY:
-    description: 'The repository where the action will execute.'
+    description: 'Repository where the action will execute (e.g., user/repo).'
     required: true
   ISSUE_NUMBER:
-    description: 'The issue number that triggered this action.'
+    description: 'Number of the issue that triggered the action.'
     required: true
   SCRIPT_PATH:
-    description: 'Path to the script that interacts with ChatGPT and generates code.'
+    description: 'Path to the script that interacts with ChatGPT to generate code.'
     required: true
     default: './scripts/script.sh'
 
 outputs:
   pull_request_url:
-    description: 'URL of the pull request containing auto-generated code for review.'
+    description: 'URL of the created pull request.'
     value: ${{ steps.create_pr.outputs.pull_request_url }}
 
 runs:
   using: 'composite'
   steps:
-
     - name: Checkout Repository
       uses: actions/checkout@v5
+      with:
+        token: ${{ inputs.GITHUB_TOKEN }}
 
     - name: Greet User
-      run: echo "👋 Hello! AutoCoder is generating code for issue #${{ inputs.ISSUE_NUMBER }}."
       shell: bash
+      run: echo "👋 Hello! AutoCoder is generating code for issue #${{ inputs.ISSUE_NUMBER }}."
 
     - name: Generate Code from Issue
+      shell: bash
       run: |
         chmod +x "${{ inputs.SCRIPT_PATH }}"
         bash "${{ inputs.SCRIPT_PATH }}" \
@@ -48,27 +50,30 @@ runs:
           "${{ inputs.REPOSITORY }}" \
           "${{ inputs.ISSUE_NUMBER }}" \
           "${{ inputs.OPENAI_API_KEY }}"
-      shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
 
     - name: Configure Git Credentials
+      shell: bash
       run: |
         git config --global user.name "autocoder-bot"
         git config --global user.email "actions@github.com"
         git remote set-url origin https://x-access-token:${{ inputs.GITHUB_TOKEN }}@github.com/${{ inputs.REPOSITORY }}.git
-      shell: bash
 
-    - name: Commit Generated Changes
+    - name: Create and Commit Changes
+      shell: bash
       run: |
+        branch_name="autocoder-branch-${{ inputs.ISSUE_NUMBER }}"
+        git checkout -b "$branch_name"
+
         git add .
         if git diff --cached --quiet; then
           echo "No changes to commit."
         else
           git commit -m "AutoCoder: Generated code for issue #${{ inputs.ISSUE_NUMBER }}"
+          git push origin "$branch_name"
         fi
-      shell: bash
 
     - name: Create Pull Request
       id: create_pr
@@ -81,4 +86,3 @@ runs:
         labels: ${{ inputs.LABEL }}
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-
