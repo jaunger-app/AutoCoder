@@ -32,6 +32,10 @@ outputs:
 runs:
   using: 'composite'
   steps:
+
+    - name: Checkout Code
+      uses: actions/checkout@v5
+        
     - name: Greet Users
       run: echo "Hello, welcome to AutoCoder! Let's generate some code."
       shell: bash
