@@ -49,18 +49,11 @@ runs:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
 
-    - name: Configure Git
+    - name: Configure Git and Credentials
       run: |
-        git config --local user.name "autocoder-bot"
-        git config --local user.email "actions@github.com"
-      shell: bash
-
-    - name: Commit and push changes
-      run: |
-        git checkout -B autocoder-branch-${{ inputs.ISSUE_NUMBER }}
-        git add autocoder-generated
-        git commit --author="autocoder-bot <actions@github.com>" -m "Autocoder generated code for issue #${{ inputs.ISSUE_NUMBER }}"
-        git push -f origin autocoder-branch-${{ inputs.ISSUE_NUMBER }}
+        git config user.name "autocoder-bot"
+        git config user.email "actions@github.com"
+        git remote set-url origin https://x-access-token:${{ inputs.GITHUB_TOKEN }}@github.com/${{ inputs.REPOSITORY }}.git
       shell: bash
            
     - name: Create Pull Request
