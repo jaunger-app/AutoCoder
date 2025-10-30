@@ -7,15 +7,13 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 
 jobs:
   access_issue_info:
     if: contains(github.event.issue.labels.*.name, 'autocoder-bot')
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
