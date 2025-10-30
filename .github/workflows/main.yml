@@ -45,6 +45,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: autocoder-branch-${{ github.event.issue.number }}
           base: main
+          title: autocoder-branch-#${{ github.event.issue.number }}
           labels: "autocoder-bot"
           
         
