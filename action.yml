@@ -1,12 +1,10 @@
 name: 'AutoCoder'
 description: >
-  AutoCoder is an advanced GitHub Action that automates code generation, enhancement, and management tasks by integrating seamlessly with OpenAI’s ChatGPT. 
-  It is designed to intelligently convert GitHub issue descriptions into high-quality, ready-to-review code contributions. When an issue with a specific label is detected, 
-  AutoCoder retrieves the issue context, interacts with ChatGPT using the provided OpenAI API key, and generates appropriate code, documentation, or configuration files. 
-  The action then commits the generated output to a new branch, creates a pull request automatically, and tags it for review. 
-  This workflow significantly reduces repetitive development tasks, accelerates prototyping, and promotes consistent coding practices across projects. 
-  Developers can easily customize inputs such as repository details, issue labels, and script paths to fit their team’s workflow. 
-  By combining automation and AI-driven insights, AutoCoder streamlines collaboration, increases productivity, and transforms how teams build and maintain software directly within GitHub.
+  AutoCoder is a powerful and intelligent GitHub Action that automates the process of transforming GitHub issues into fully functional code using OpenAI’s ChatGPT API. When an issue is labeled with a specific tag, AutoCoder retrieves the issue’s content, processes
+  the description through the OpenAI API, and generates relevant source code, documentation, or tests based on the given context. The generated output is then committed automatically to a new branch, and a pull request is created for developers to review and merge.
+  This automation streamlines repetitive coding tasks, accelerates prototyping, and enhances collaboration by enabling developers to work directly with AI-generated suggestions inside GitHub. AutoCoder supports customization of issue labels, repository settings, 
+  authentication tokens, and the generation script path, allowing it to adapt to any team’s workflow. Whether you’re building new features, generating templates,
+  or experimenting with AI-assisted development, AutoCoder provides a seamless bridge between human creativity and automated code generation — helping teams deliver faster, maintain consistency, and focus on higher-level problem-solving.
 author: 'jaunger'
 
 inputs:
