@@ -9,17 +9,17 @@ inputs:
   openai_api_key:
     description: 'API key for OpenAI, enabling interactions with the ChatGPT service to generate code based on issue descriptions.'
     required: true
-  issue_label:
+  LABEL:
     description: 'The label assigned to GitHub issues that should be processed by the AutoCoder action. Only issues with this label will trigger the code generation process.'
     required: true
     default: 'autocoder-bot'
-  repository:
+  REPOSITORY:
     description: 'The repository where the action will be executed.'
     required: true
-  issue_number:
+  ISSUE_NUMBER:
     description: 'The number of the issue that triggered the action.'
     required: true
-  script_path:
+  SCRIPT_PATH:
     description: 'The path to the script that interacts with ChatGPT and generates code.'
     required: true
     default: './scripts/script.sh'
@@ -38,11 +38,11 @@ runs:
 
     - name: Generate Code from Issue
       run: |
-        chmod +x "${{ inputs.script_path }}"
-        bash "${{ inputs.script_path }}" "${{ inputs.github_token }}" "${{ inputs.repository }}" "${{ inputs.issue_number }}" "${{ inputs.openai_api_key }}"
+        chmod +x "${{ inputs.SCRIPT_PATH }}"
+        bash "${{ inputs.SCRIPT_PATH }}" "${{ inputs.GITHUB_TOKEN }}" "${{ inputs.REPOSITORY }}" "${{ inputs.ISSUE_NUMBER }}" "${{ inputs.openai_api_key }}"
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ inputs.openai_api_key }}
 
     - name: Commit Generated Code
@@ -50,7 +50,7 @@ runs:
         git config --global user.name "autocoder-bot"
         git config --global user.email "autocoder-bot@users.noreply.github.com"
         git add .
-        git commit -m "feat: add new auto-generated code" || echo "No changes to commit"
+        git commit -m "feat: add new auto-generated code"
       shell: bash
 
     - name: Create Pull Request
@@ -60,7 +60,7 @@ runs:
         token: ${{ inputs.GITHUB_TOKEN }}
         branch: autocoder-branch-${{ inputs.issue_number }}
         base: main
-        title: "AutoCoder: Generated code for issue #${{ inputs.issue_number }}"
-        labels: ${{ inputs.issue_label }}
+        title: "AutoCoder: Generated code for issue #${{ inputs.ISSUE_NUMBER }}"
+        labels: ${{ inputs.LABEL }}
       env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
