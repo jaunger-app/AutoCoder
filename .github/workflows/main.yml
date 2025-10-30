@@ -32,13 +32,13 @@ jobs:
 
       - name: Configure Git
         run: |
-          -  git config user.name "autocoder-bot"
-          -  git config user.email "actions@github.com"
+            git config user.name "autocoder-bot"
+            git config user.email "actions@github.com"
 
       - name: Commit generated code
         run: |
-          - git add ./autocoder-artifact
-          - git commit -m "feat: add new Auto generated Code"
+           git add ./autocoder-artifact
+           git commit -m "feat: add new Auto generated Code"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
