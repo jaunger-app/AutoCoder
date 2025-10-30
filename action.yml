@@ -1,10 +1,5 @@
 name: 'AutoCoder'
-description: >
-  AutoCoder is a powerful and intelligent GitHub Action that automates the process of transforming GitHub issues into fully functional code using OpenAI’s ChatGPT API. When an issue is labeled with a specific tag, AutoCoder retrieves the issue’s content, processes
-  the description through the OpenAI API, and generates relevant source code, documentation, or tests based on the given context. The generated output is then committed automatically to a new branch, and a pull request is created for developers to review and merge.
-  This automation streamlines repetitive coding tasks, accelerates prototyping, and enhances collaboration by enabling developers to work directly with AI-generated suggestions inside GitHub. AutoCoder supports customization of issue labels, repository settings, 
-  authentication tokens, and the generation script path, allowing it to adapt to any team’s workflow. Whether you’re building new features, generating templates,
-  or experimenting with AI-assisted development, AutoCoder provides a seamless bridge between human creativity and automated code generation — helping teams deliver faster, maintain consistency, and focus on higher-level problem-solving.
+description: 'This action automates the process of generating code from GitHub issues using OpenAIs ChatGPT and subsequently creates a pull request with the generated code for review.'
 author: 'jaunger'
 
 inputs:
