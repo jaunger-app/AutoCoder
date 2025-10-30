@@ -6,7 +6,7 @@ inputs:
   GITHUB_TOKEN:
     description: 'Personal access token (PAT) used for GitHub API authentication. This token is required to create pull requests and handle other repository interactions.'
     required: true
-  openai_api_key:
+  OPENAI_API_KEY:
     description: 'API key for OpenAI, enabling interactions with the ChatGPT service to generate code based on issue descriptions.'
     required: true
   LABEL:
@@ -39,11 +39,11 @@ runs:
     - name: Generate Code from Issue
       run: |
         chmod +x "${{ inputs.SCRIPT_PATH }}"
-        bash "${{ inputs.SCRIPT_PATH }}" "${{ inputs.GITHUB_TOKEN }}" "${{ inputs.REPOSITORY }}" "${{ inputs.ISSUE_NUMBER }}" "${{ inputs.openai_api_key }}"
+        bash "${{ inputs.SCRIPT_PATH }}" "${{ inputs.GITHUB_TOKEN }}" "${{ inputs.REPOSITORY }}" "${{ inputs.ISSUE_NUMBER }}" "${{ inputs.OPENAI_API_KEY }}"
       shell: bash
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-        OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+        OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
 
     - name: Commit Generated Code
       run: |
