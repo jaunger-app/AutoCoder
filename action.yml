@@ -49,13 +49,16 @@ runs:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
 
-    - name: Commit Generated Code
+    - name: Configure Git
       run: |
-        git config --global user.name "autocoder-bot"
-        git config --global user.email "autocoder-bot@users.noreply.github.com"
+        git config user.name "autocoder-bot"
+        git config user.email "actions@github.com"
+        
+    - name: Commit generated code
+      run: |
         git add .
-        git commit -m "feat: add new auto-generated code"
-      shell: bash
+        git commit -m "feat: add new Auto generated Code"
+           
 
     - name: Create Pull Request
       id: create_pr
