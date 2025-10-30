@@ -3,7 +3,7 @@ description: 'This action automates the process of generating code from GitHub i
 author: 'jaunger'
 
 inputs:
-  github_token:
+  GITHUB_TOKEN:
     description: 'Personal access token (PAT) used for GitHub API authentication. This token is required to create pull requests and handle other repository interactions.'
     required: true
   openai_api_key:
