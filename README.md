@@ -1,22 +1,2 @@
 AutoCoder
-
-AutoCoder is a GitHub Actions project that automates coding and workflow tasks using ChatGPT.
-It integrates AI-assisted code generation and management directly into GitHub, enabling smarter automation, testing, and development.
-
-Project Structure
-AutoCoder/
-├── .github/
-│   └── workflows/
-│       └── main.yml
-└── scripts/
-    └── script.sh
-
-Directories
-
-.github/workflows/ – contains GitHub Actions configuration files.
-
-scripts/ – holds shell or Python scripts used by the workflows.
-
-Purpose
-
-This repository serves as the foundation for building AI-powered automation pipelines with GitHub Actions and ChatGPT integration.
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
