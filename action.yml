@@ -31,7 +31,7 @@ outputs:
 
 runs:
   using: 'composite'
-  steps:
+  steps:  
 
     - name: Checkout Code
       uses: actions/checkout@v5
@@ -49,11 +49,16 @@ runs:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
 
-    - name: Configure Git and Credentials
+    - name: Configure Credentials
       run: |
         git config user.name "autocoder-bot"
         git config user.email "actions@github.com"
       shell: bash
+
+    - name: make a Commit
+      run: |
+        git add .
+        git commit -m "feat: add new Auto generated Code" 
            
     - name: Create Pull Request
       id: create_pr
