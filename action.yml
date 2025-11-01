@@ -58,7 +58,8 @@ runs:
     - name: make a Commit
       run: |
         git add .
-        git commit -m "feat: add new Auto generated Code" 
+        git commit -m "feat: add new Auto generated Code"
+      shell: bash
            
     - name: Create Pull Request
       id: create_pr
