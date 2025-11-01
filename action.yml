@@ -3,24 +3,24 @@ description: 'Automates code generation from GitHub issues using OpenAI’s Chat
 author: 'Your Name or Organization'
 
 inputs:
-  github_token:
+  GITHUB_TOKEN:
     description: 'Personal access token (PAT) used for GitHub API authentication. This token is required to create pull requests and handle other repository interactions.'
     required: true
-  openai_api_key:
+  REPOSITORY:
+    description: 'The repository where the action will be executed.'
+    required: true
+  ISSUE_NUMBER:
+    description: 'The number of the issue that triggered the action.'
+    required: true
+  OPENAI_API_KEY:
     description: 'API key for OpenAI, enabling interactions with ChatGPT to generate code from issue descriptions.'
     required: true
-  repository:
-    description: 'The GitHub repository where the action will run, e.g. user/repo.'
-    required: true
-  issue_number:
-    description: 'The number of the issue that triggered the AutoCoder action.'
-    required: true
-  script_path:
-    description: 'Path to the script that handles ChatGPT code generation and repository interactions.'
+  SCRIPT_PATH:
+    description: 'Path to the script that interacts with ChatGPT and generates code.'
     required: true
     default: './scripts/script.sh'
-  label:
-    description: 'Label that triggers the AutoCoder process.'
+  LABEL:
+    description: 'Label that triggers the AutoCoder action.'
     required: false
     default: 'autocoder-bot'
 
@@ -34,21 +34,21 @@ runs:
     - name: Checkout Repository
       uses: actions/checkout@v5
 
-    - name: Ensure LF line endings
-      run: sed -i 's/\r$//' ${{ inputs.script_path }}
+    - name: Fix line endings (convert CRLF to LF)
+      run: sed -i 's/\r$//' ${{ inputs.SCRIPT_PATH }}
       shell: bash
 
     - name: Make script executable
-      run: chmod +x ${{ inputs.script_path }}
+      run: chmod +x ${{ inputs.SCRIPT_PATH }}
       shell: bash
 
     - name: Run AutoCoder script
       id: generate_code
-      run: ${{ inputs.script_path }} "${{ inputs.github_token }}" "${{ inputs.repository }}" "${{ inputs.issue_number }}" "${{ inputs.openai_api_key }}"
+      run: ${{ inputs.SCRIPT_PATH }} "${{ inputs.GITHUB_TOKEN }}" "${{ inputs.REPOSITORY }}" "${{ inputs.ISSUE_NUMBER }}" "${{ inputs.OPENAI_API_KEY }}"
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ inputs.github_token }}
-        OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
 
     - name: Configure Git user
       run: |
@@ -66,11 +66,11 @@ runs:
       id: create_pr
       uses: peter-evans/create-pull-request@v7
       with:
-        token: ${{ inputs.github_token }}
-        branch: autocoder-branch-${{ inputs.issue_number }}
+        token: ${{ inputs.GITHUB_TOKEN }}
+        branch: autocoder-branch-${{ inputs.ISSUE_NUMBER }}
         base: main
-        title: "autocoder-branch-#${{ inputs.issue_number }}"
-        labels: ${{ inputs.label }}
+        title: "autocoder-branch-#${{ inputs.ISSUE_NUMBER }}"
+        labels: ${{ inputs.LABEL }}
 
     - name: Output PR URL
       run: echo "pull_request_url=${{ steps.create_pr.outputs.pull_request_url }}" >> $GITHUB_OUTPUT
