@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v5
-        
+
       - name: Fix line endings (convert CRLF to LF) 
         run: sed -i 's/\r$//' scripts/script.sh
 
@@ -29,29 +29,26 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-      - name: Configure Git
+      - name: Configure Git credentials
         run: |
-            git config user.name "autocoder-bot"
-            git config user.email "actions@github.com"
+          git config --global user.name "autocoder-bot"
+          git config --global user.email "actions@github.com"
 
       - name: Commit generated code
         run: |
-           git add .
-           git commit -m "feat: add new Auto generated Code"
-
+          git add .
+          git commit -m "feat: add new Auto generated Code" 
+        
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
-        with:
+        with: 
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: autocoder-branch-${{ github.event.issue.number }}
           base: main
           title: autocoder-branch-#${{ github.event.issue.number }}
           labels: "autocoder-bot"
+
           
-        
-      
-
-
       
      # - name: Upload Artifacts
      #   uses: actions/upload-artifact@v4
