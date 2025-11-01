@@ -2,7 +2,6 @@ name: 'AutoCoder'
 description: 'A reusable GitHub Action that uses OpenAI ChatGPT to generate code from GitHub issues and automatically create a pull request with the generated code.'
 author: 'Your Name or Organization'
 
-# Define the inputs your action requires
 inputs:
   GITHUB_TOKEN:
     description: 'Personal access token (PAT) used for GitHub API authentication. This token is required to create pull requests and handle other repository interactions.'
@@ -21,7 +20,7 @@ inputs:
     required: true
 
   SCRIPT_PATH:
-    description: 'Path to the script that interacts with ChatGPT and generates code (e.g., scripts/generate_code.py).'
+    description: 'Path to the script that interacts with ChatGPT and generates code (e.g., scripts/generate_code.sh).'
     required: true
 
   LABEL:
@@ -29,41 +28,29 @@ inputs:
     required: false
     default: 'autocoder'
 
-# Optional outputs (example: pull request URL)
 outputs:
   pull_request_url:
     description: 'The URL of the pull request created with the generated code.'
     value: ${{ steps.create_pr.outputs.pull_request_url }}
 
-# Define how the action runs
 runs:
   using: 'composite'
   steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Setup Python (if your generator script uses Python)
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.x'
-
-    - name: Install dependencies
-      if: ${{ inputs.SCRIPT_PATH && endsWith(inputs.SCRIPT_PATH, '.py') }}
-      run: |
-        pip install -r requirements.txt || true
+    - name: Ensure script is executable
+      run: chmod +x ${{ inputs.SCRIPT_PATH }}
       shell: bash
 
-    - name: Generate code from issue using ChatGPT
-      run: |
-        echo "🚀 Running AutoCoder script..."
-        python "${{ inputs.SCRIPT_PATH }}" \
-          --repo "${{ inputs.REPOSITORY }}" \
-          --issue "${{ inputs.ISSUE_NUMBER }}" \
-          --label "${{ inputs.LABEL }}"
-      shell: bash
+    - name: Run AutoCoder Script
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        REPOSITORY: ${{ inputs.REPOSITORY }}
+        ISSUE_NUMBER: ${{ inputs.ISSUE_NUMBER }}
         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
+      run: ${{ inputs.SCRIPT_PATH }} "$GITHUB_TOKEN" "${{ inputs.REPOSITORY }}" "${{ inputs.ISSUE_NUMBER }}" "$OPENAI_API_KEY"
+      shell: bash
 
     - name: Create Pull Request with generated code
       id: create_pr
@@ -79,7 +66,6 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
 
-# Optional branding section (for marketplace)
 branding:
   icon: 'cpu'
   color: 'blue'
