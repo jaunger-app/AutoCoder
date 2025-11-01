@@ -19,6 +19,10 @@ inputs:
     description: 'The path to the script that interacts with ChatGPT and generates code.'
     required: false
     default: scripts/script.sh
+  LABEL:
+    description: 'The label assigned to GitHub issues that should be processed by the AutoCoder action. Only issues with this label will trigger the code generation process.'
+    required: true
+    default: 'autocoder-bot'
 
 outputs:
   pull_request_url:
