@@ -51,26 +51,6 @@ runs:
       run: ${{ inputs.SCRIPT_PATH }} "$GITHUB_TOKEN" "${{ inputs.REPOSITORY }}" "${{ inputs.ISSUE_NUMBER }}" "$OPENAI_API_KEY"
       shell: bash
 
-    - name: Upload generated code artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: autocoder-artifact
-        path: autocoder-bot/
-
-    - name: Download artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: autocoder-artifact
-        path: autocoder-artifact/
-
-    - name: Prepare generated code
-      run: |
-        mkdir -p autocoder-generated
-        cp -R autocoder-artifact/* autocoder-generated/
-        echo "// Force change: $(date)" > autocoder-generated/force_change.txt
-      shell: bash
-
-    # ---- REQUIRED BY TESTS ----
     - name: Configure credentials
       run: |
         git config --global user.name "autocoder-bot"
@@ -82,7 +62,6 @@ runs:
         git add .
         git commit -m "autocoder commit" || echo "No changes to commit"
       shell: bash
-    # ---------------------------
 
     - name: Create Pull Request
       id: pr
