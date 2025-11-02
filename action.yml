@@ -1,5 +1,5 @@
 name: "AutoCoder"
-description: "Generate code from GitHub issues using ChatGPT and automatically open a PR"
+description: "Generate code from GitHub issues using ChatGPT and automatically open a Pull Request"
 author: "Dein Name"
 branding:
   icon: "bot"
@@ -7,7 +7,7 @@ branding:
 
 inputs:
   GITHUB_TOKEN:
-    description: "GitHub token for authentication"
+    description: "GitHub token for authentication (e.g., secrets.GITHUB_TOKEN)"
     required: true
   REPOSITORY:
     description: "Repository in the format owner/repo"
@@ -19,9 +19,13 @@ inputs:
     description: "OpenAI API key for ChatGPT"
     required: true
   SCRIPT_PATH:
-    description: "Path to your generation script"
+    description: "Path to your code-generation script (relative to repository root)"
     required: true
     default: "scripts/generate-code.sh"
+  LABEL:
+    description: "Label to apply to created pull requests"
+    required: false
+    default: "autocoder-bot"
 
 runs:
   using: "composite"
@@ -46,8 +50,8 @@ runs:
       uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ inputs.GITHUB_TOKEN }}
-        commit-message: "Generated code for issue #${{ inputs.ISSUE_NUMBER }}"
+        labels: ${{ inputs.LABEL }}
+        author: autocoder-bot <actions@github.com>
         title: "PR to issue #${{ inputs.ISSUE_NUMBER }}"
         branch: autocoder-branch-${{ inputs.ISSUE_NUMBER }}
-        labels: "autocoder-bot"
-        author: autocoder-bot <actions@github.com>
+        commit-message: "Generated code for issue #${{ inputs.ISSUE_NUMBER }}"
