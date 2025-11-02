@@ -1,81 +1,94 @@
 name: "AutoCoder"
-description: "Generate code using ChatGPT based on issue content and create a pull request automatically"
-author: "autocoder-bot"
+description: "Automatically generate code from GitHub issues using OpenAI's ChatGPT and create a pull request with the results."
+author: "Your Name or Organization"
+
 branding:
-  icon: "bot"
+  icon: "robot"
   color: "blue"
 
 inputs:
-  GITHUB_TOKEN:
-    description: "GitHub token for authentication"
+  github_token:
+    description: "Personal access token used for GitHub API authentication."
     required: true
-  REPOSITORY:
-    description: "Repository in the format owner/repo"
+  openai_api_key:
+    description: "API key for OpenAI to generate code based on issue descriptions."
     required: true
-  ISSUE_NUMBER:
-    description: "Number of the issue triggering the action"
+  repository:
+    description: "Repository in the format owner/repo where code will be generated."
     required: true
-  OPENAI_API_KEY:
-    description: "OpenAI API key for ChatGPT"
+  issue_number:
+    description: "The issue number that triggered the action."
     required: true
-  SCRIPT_PATH:
-    description: "Path to your script file (default: scripts/script.sh)"
+  script_path:
+    description: "Path to the shell script that interacts with ChatGPT."
     required: true
-    default: "scripts/script.sh"
-  LABEL:
-    description: "Label used to trigger and mark pull requests"
-    required: false
+    default: "./scripts/script.sh"
+  label:
+    description: "The label that triggers code generation."
+    required: true
     default: "autocoder-bot"
+
+outputs:
+  pull_request_url:
+    description: "URL of the pull request created by the action."
 
 runs:
   using: "composite"
   steps:
-    - name: Checkout Code
-      uses: actions/checkout@v5
+    - name: "Checkout repository"
+      uses: actions/checkout@v3
 
-    - name: Fix line endings (convert CRLF to LF)
-      run: sed -i 's/\r$//' ${{ github.action_path }}/${{ inputs.SCRIPT_PATH }}
-      shell: bash
+    - name: "Ensure script is executable"
+      run: chmod +x ${{ inputs.script_path }}
 
-    - name: Set permissions for script
-      run: chmod +x ${{ github.action_path }}/${{ inputs.SCRIPT_PATH }}
-      shell: bash
-
-    - name: Run script
-      id: generate_code
-      run: ${{ github.action_path }}/${{ inputs.SCRIPT_PATH }} \
-        "${{ inputs.GITHUB_TOKEN }}" \
-        "${{ inputs.REPOSITORY }}" \
-        "${{ inputs.ISSUE_NUMBER }}" \
-        "${{ inputs.OPENAI_API_KEY }}"
-      shell: bash
+    - name: "Run AutoCoder Script"
       env:
-        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-        OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
+        REPOSITORY: ${{ inputs.repository }}
+        ISSUE_NUMBER: ${{ inputs.issue_number }}
+        OPENAI_API_KEY: ${{ inputs.openai_api_key }}
+      run: ${{ inputs.script_path }} "$GITHUB_TOKEN" "${{ inputs.repository }}" "${{ inputs.issue_number }}" "${{ inputs.openai_api_key }}"
 
-    - name: Configure Git
+    - name: "Upload generated code artifact"
+      uses: actions/upload-artifact@v4
+      with:
+        name: autocoder-artifact
+        path: autocoder-bot/
+
+    - name: "Download artifact"
+      uses: actions/download-artifact@v4
+      with:
+        name: autocoder-artifact
+        path: autocoder-artifact/
+
+    - name: "Prepare generated code"
+      run: |
+        mkdir -p autocoder-generated
+        cp -R autocoder-artifact/* autocoder-generated/
+        echo "// Force change: $(date)" > autocoder-generated/force_change.txt
+
+    - name: "Configure Git user"
       run: |
         git config --global user.name "autocoder-bot"
         git config --global user.email "actions@github.com"
-      shell: bash
 
-    - name: Commit and Push generated code
+    - name: "Commit and push changes"
       run: |
-        branch_name="autocoder-branch-${{ inputs.ISSUE_NUMBER }}"
-        git checkout -b "$branch_name"
-        git add .
-        git commit -m "feat: add new Auto generated Code" || echo "No changes to commit"
-        git push --set-upstream origin "$branch_name"
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+        git checkout -B autocoder-branch-${{ inputs.issue_number }}
+        git add autocoder-generated
+        git commit --author="autocoder-bot <actions@github.com>" -m "Autocoder generated code for issue #${{ inputs.issue_number }}"
+        git push -f origin autocoder-branch-${{ inputs.issue_number }}
 
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v7
+    - name: "Create Pull Request"
+      id: pr
+      uses: peter-evans/create-pull-request@v5
       with:
-        token: ${{ inputs.GITHUB_TOKEN }}
-        branch: autocoder-branch-${{ inputs.ISSUE_NUMBER }}
+        title: "Autocoder generated code for issue #${{ inputs.issue_number }}"
+        branch: "autocoder-branch-${{ inputs.issue_number }}"
         base: main
-        title: "autocoder-branch-#${{ inputs.ISSUE_NUMBER }}"
-        labels: ${{ inputs.LABEL }}
-        author: autocoder-bot <actions@github.com>
+        labels: ${{ inputs.label }}
+        author: "autocoder-bot <actions@github.com>"
+        committer: "autocoder-bot <actions@github.com>"
+
+    - name: "Set output PR URL"
+      run: echo "pull_request_url=${{ steps.pr.outputs.pull-request-url }}" >> $GITHUB_OUTPUT
