@@ -1,4 +1,4 @@
-name: "ChatGPT Code Generator"
+name: "AutoCoder"
 description: "Generate code from GitHub issues using ChatGPT and automatically open a PR"
 author: "Dein Name"
 branding:
