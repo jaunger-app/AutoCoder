@@ -1,4 +1,4 @@
-name: "Auto_Coder Action"
+name: "AutoCoder"
 description: "Generate code using ChatGPT based on issue content and create a pull request automatically"
 author: "autocoder-bot"
 branding:
