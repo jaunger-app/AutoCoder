@@ -29,38 +29,25 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
-      # 🟢 Git konfigurieren (wie bisher)
       - name: Configure Git
         run: |
           git config --global user.name "autocoder-bot"
           git config --global user.email "actions@github.com"
 
-      # 🟢 Commit und Push vorbereitet
       - name: Commit and Push generated code
-        run: |
-          branch_name="autocoder-branch-${{ github.event.issue.number }}"
-          git checkout -b "$branch_name"
-          git add .
-          git commit -m "feat: add new Auto generated Code" || echo "No changes to commit"
-          git push --set-upstream origin "$branch_name"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # 🟢 Pull Request erstellen
+        run: | 
+          git add . 
+          git commit -m "feat: add new Auto generated Code" 
+        
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
-        with:
+        with: 
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: autocoder-branch-${{ github.event.issue.number }}
           base: main
-          title: "autocoder-branch-#${{ github.event.issue.number }}"
+          title: autocoder-branch-#${{ github.event.issue.number }}
           labels: "autocoder-bot"
-
           
-        
-      
-
-
       
      # - name: Upload Artifacts
      #   uses: actions/upload-artifact@v4
